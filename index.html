@@ -1,0 +1,130 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>CuraSight</title><script src="common.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600&family=Noto+Sans+Devanagari:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css"></head><body data-page="home"><div class="wrap">
+<div id="nav"></div>
+<header class="hero"><h1><span style="background:none;color:#fff;-webkit-text-fill-color:#fff" data-i="h1a"></span><span data-i="h1b"></span></h1><p data-i="sub"></p>
+<div class="btns"><button class="p" id="hDec" data-i="bDec"></button><button id="hSam" data-i="bSam"></button></div></header>
+<section id="feat"><div class="fgrid"><a class="fc" href="/pharmacies.html"><i>⌖</i><h3 data-i="fPh"></h3><span data-i="fPhD"></span></a><a class="fc" href="/schedule.html"><i>◷</i><h3 data-i="fSc"></h3><span data-i="fScD"></span></a><a class="fc" href="/history.html"><i>↺</i><h3 data-i="fHi"></h3><span data-i="fHiD"></span></a><a class="fc" href="/savings.html"><i>₹</i><h3 data-i="fSv"></h3><span data-i="fSvD"></span></a></div></section>
+<section id="ws"><div class="eb" data-i="eb1"></div><div class="hd"><h2 data-i="h2"></h2><p data-i="h2p"></p></div>
+<div class="card"><div class="ch"><h3 data-i="c1"></h3><span>JPG · PNG · WEBP</span></div>
+<label class="drop" id="drop" tabindex="0"><svg class="scene" viewBox="0 0 1000 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><rect width="1000" height="420" fill="#080c14"/><circle cx="170" cy="150" r="78" fill="none" stroke="#2a3342" stroke-width="14"/><circle cx="170" cy="150" r="30" fill="#1b2330"/><g transform="rotate(-10 520 210)"><rect x="380" y="10" width="300" height="420" rx="8" fill="#3b4353"/><text x="415" y="95" font-size="60" font-family="serif" fill="#1a2130">R</text><g stroke="#1a2130" stroke-width="3" fill="none" stroke-linecap="round"><path d="M410 140h230M410 190c30-14 50 8 80-4s50 6 90-2M410 245c40-12 60 10 100-2M410 300c30-10 70 8 110-4"/></g><circle cx="450" cy="370" r="30" fill="none" stroke="#1b3a78" stroke-width="5"/></g><path d="M800 90l-60 250" stroke="#161c27" stroke-width="16" stroke-linecap="round"/></svg>
+<div class="scan"></div><div class="pick"><i>⬆</i><b data-i="pick"></b><small data-i="pickS"></small></div><img id="prev" alt="" hidden><input id="file" type="file" accept="image/*" hidden></label>
+<div class="tabs"><button class="on" id="tUp" data-i="tUp"></button><button id="tSam" data-i="tSam"></button></div>
+<div id="ocrRow" hidden><div class="tabs"><button class="p" id="read" data-i="read"></button><button id="rot" data-i="bRot"></button><label class="chk" style="margin:0"><input type="checkbox" id="hand"><span data-i="hand"></span></label></div><div class="bar" id="bar" hidden><i id="fill"></i></div></div><p class="note" id="ocrNote" hidden></p><p class="note" id="ocrLow" hidden></p><div class="tabs" style="margin-top:8px"><button id="ocrAll" hidden></button></div></div>
+<div class="card"><div class="ch"><h3 data-i="c2"></h3><span data-i="edit"></span></div>
+<div class="sw"><input id="sq" type="search" autocomplete="off" data-ip="sq"><div id="sug"></div></div>
+<textarea id="txt" data-ip="ph"></textarea><label class="chk"><input type="checkbox" id="verified"><span data-i="chk"></span></label><button class="p" id="go" disabled data-i="go"></button></div></section>
+<section id="res"><div class="eb b" data-i="eb2"></div><div class="hd"><h2 id="rTitle"></h2></div><div id="out"></div></section>
+<footer><div><b data-i="safe"></b> <span data-i="safeT"></span></div><img class="logo" src="logo.png" alt="CuraSight" style="height:36px"></footer></div>
+<script>
+const T={en:{bRot:"⟳ Rotate photo",nDrop:"{n} lines that did not look like medicines were left out.",nLow:"Hard to read: {l}. Please check these first.",bAll:"Show all lines the reader saw",bOnly:"Show only medicine lines",nBig:"This image is too large (over 15 MB). Please choose a smaller photo.",fSv:"Savings dashboard",fSvD:"See how much you can save across all your prescriptions.",nxRep:"Download report (PDF)",fPh:"Find a pharmacy",fPhD:"Nearby medical shops and Jan Aushadhi Kendras, using your live location.",fSc:"Medicine schedule",fScD:"Turn your prescription into a daily timetable with calendar reminders.",fHi:"History",fHiD:"Every prescription you decoded, saved privately to your account.",nxSc:"Set medicine reminders",nxPh:"Find a pharmacy near you",nxHi:"View your history",h1a:"Know exactly what",h1b:"you're taking.",sub:"Upload a prescription or paste its text. CuraSight turns medical shorthand into clear explanations, highlights lower-cost alternatives, and estimates your total.",bDec:"Decode a prescription ↓",bSam:"Try a sample",eb1:"Prescription workspace",h2:"Add it. Check it. Decode it.",h2p:"For clear results, use a well-lit photo and confirm every detected line against the original prescription.",c1:"1. Add prescription",pick:"Choose a prescription image",pickS:"Tap to browse your device",tUp:"Upload Image",tSam:"Use sample",read:"Read text from image",hand:"Handwritten prescription",c2:"2. Verify text",edit:"Editable",sq:"Search a medicine name and tap it to add",ph:"Type or paste the medicine names, strength, and directions here…",chk:"I checked this text against the original prescription.",go:"Decode prescription",eb2:"Plain-language breakdown",rEmpty:"Your decoded medicines appear here",rTitle:"Your decoded medicines",emptyT:"Add prescription text to reveal your breakdown.",emptyS:"You'll see purpose, directions, alternatives, and estimated prices.",decoding:"Decoding…",noMed:"No medicines found. Check the text and try again.",srv:"Could not reach the CuraSight server ({e}). Run npm start, then open http://localhost:3000",noTxt:"Type or paste the prescription text first.",nDefault:"Choose an image and tap Read text, or type the prescription below. Always check the text against your prescription.",nPrep:"Preparing image…",nRead:"Reading text… {p}%",nLoad:"Loading reader ({s})…",nDone:"Read with {c}% confidence. Check every line against your prescription and fix mistakes.",nHand:"Handwriting cannot be read reliably by the computer. Tap your image to enlarge it, then search each medicine name below and tap it to add.",nFail:"Could not read the image ({e}). The first read needs an internet connection to load the reader.",s1:"Medicines identified",s2:"Estimated cost as prescribed",s3:"Possible saving with alternatives",made:"Made by {m}. Medicines with the same ingredients and strength are listed below. Ask your doctor or pharmacist before switching.",best:"lowest price",save:"Save {n}%",sim:"Similar",noAlt:"No cheaper alternative with the same ingredients found.",disc:"may be discontinued",aiB:"AI-generated, not medical advice. Check with your doctor or pharmacist.",refB:"General information from the CuraSight reference list. Check with your doctor or pharmacist.",many:"{n} medicines in one prescription. Ask your doctor to confirm each one is still needed.",group:"{names} are in the same group ({g}). Ask your doctor whether you need both.",ing:"{names} both contain {i}. Check the total daily amount with your pharmacist.",unm:"Could not identify: {names}. Check the spelling or ask your pharmacist.",safe:"Safety first.",safeT:"CuraSight explains what a clinician has already prescribed. It does not diagnose, recommend treatment, or replace your doctor or pharmacist."},
+hi:{bRot:"⟳ फ़ोटो घुमाएं",nDrop:"{n} पंक्तियां जो दवा जैसी नहीं लगीं, हटा दी गईं।",nLow:"पढ़ने में मुश्किल: {l}। कृपया इन्हें पहले जांचें।",bAll:"रीडर को दिखी सभी पंक्तियां दिखाएं",bOnly:"सिर्फ़ दवा की पंक्तियां दिखाएं",nBig:"यह फ़ोटो बहुत बड़ी है (15 MB से ज़्यादा)। कृपया छोटी फ़ोटो चुनें।",fSv:"बचत डैशबोर्ड",fSvD:"देखें कि आपके सभी पर्चों में आप कितनी बचत कर सकते हैं।",nxRep:"रिपोर्ट डाउनलोड करें (PDF)",fPh:"फार्मेसी खोजें",fPhD:"आपकी लाइव लोकेशन से पास की मेडिकल दुकानें और जन औषधि केंद्र।",fSc:"दवा का शेड्यूल",fScD:"अपने पर्चे को रोज़ के टाइमटेबल और कैलेंडर रिमाइंडर में बदलें।",fHi:"हिस्ट्री",fHiD:"आपके डिकोड किए हर पर्चे, आपके खाते में निजी रूप से सेव।",nxSc:"दवा के रिमाइंडर लगाएं",nxPh:"अपने पास की फार्मेसी खोजें",nxHi:"अपनी हिस्ट्री देखें",h1a:"जानिए आप ठीक-ठीक",h1b:"कौन सी दवा ले रहे हैं।",sub:"पर्चा अपलोड करें या उसका टेक्स्ट चिपकाएं। CuraSight डॉक्टर की संक्षिप्त भाषा को सरल व्याख्या में बदलता है, सस्ते विकल्प दिखाता है और आपका अनुमानित कुल खर्च बताता है।",bDec:"पर्चा डिकोड करें ↓",bSam:"नमूना आज़माएं",eb1:"पर्चा वर्कस्पेस",h2:"जोड़ें। जांचें। डिकोड करें।",h2p:"साफ़ नतीजों के लिए अच्छी रोशनी में फ़ोटो लें और हर पहचानी गई पंक्ति को असली पर्चे से मिलाएं।",c1:"1. पर्चा जोड़ें",pick:"पर्चे की फ़ोटो चुनें",pickS:"अपने डिवाइस से चुनने के लिए टैप करें",tUp:"फ़ोटो अपलोड करें",tSam:"नमूना इस्तेमाल करें",read:"फ़ोटो से टेक्स्ट पढ़ें",hand:"हाथ से लिखा पर्चा",c2:"2. टेक्स्ट जांचें",edit:"बदल सकते हैं",sq:"दवा का नाम खोजें और जोड़ने के लिए टैप करें",ph:"यहां दवाओं के नाम, मात्रा और निर्देश लिखें या चिपकाएं…",chk:"मैंने इस टेक्स्ट को असली पर्चे से मिला लिया है।",go:"पर्चा डिकोड करें",eb2:"सरल भाषा में विवरण",rEmpty:"आपकी डिकोड की गई दवाएं यहां दिखेंगी",rTitle:"आपकी डिकोड की गई दवाएं",emptyT:"विवरण देखने के लिए पर्चे का टेक्स्ट जोड़ें।",emptyS:"आपको उपयोग, निर्देश, विकल्प और अनुमानित दाम दिखेंगे।",decoding:"डिकोड हो रहा है…",noMed:"कोई दवा नहीं मिली। टेक्स्ट जांचकर फिर कोशिश करें।",srv:"CuraSight सर्वर से संपर्क नहीं हो सका ({e})। npm start चलाएं, फिर http://localhost:3000 खोलें।",noTxt:"पहले पर्चे का टेक्स्ट लिखें या चिपकाएं।",nDefault:"फ़ोटो चुनकर 'टेक्स्ट पढ़ें' दबाएं, या नीचे पर्चा खुद लिखें। टेक्स्ट को हमेशा अपने पर्चे से मिलाएं।",nPrep:"फ़ोटो तैयार हो रही है…",nRead:"टेक्स्ट पढ़ा जा रहा है… {p}%",nLoad:"रीडर लोड हो रहा है ({s})…",nDone:"{c}% भरोसे के साथ पढ़ा गया। हर पंक्ति अपने पर्चे से मिलाएं और गलतियां सुधारें।",nHand:"हाथ की लिखावट को कंप्यूटर भरोसे से नहीं पढ़ सकता। फ़ोटो पर टैप करके बड़ा करें, फिर नीचे हर दवा का नाम खोजें और जोड़ने के लिए उस पर टैप करें।",nFail:"फ़ोटो नहीं पढ़ी जा सकी ({e})। पहली बार रीडर लोड करने के लिए इंटरनेट चाहिए।",s1:"पहचानी गई दवाएं",s2:"पर्चे के अनुसार अनुमानित खर्च",s3:"विकल्पों से संभावित बचत",made:"निर्माता: {m}। समान तत्व और मात्रा वाली दवाएं नीचे दी गई हैं। बदलने से पहले डॉक्टर या फार्मासिस्ट से पूछें।",best:"सबसे कम दाम",save:"{n}% बचत",sim:"लगभग बराबर",noAlt:"समान तत्वों वाला कोई सस्ता विकल्प नहीं मिला।",disc:"बंद हो चुकी हो सकती है",aiB:"AI द्वारा बनाया गया, चिकित्सा सलाह नहीं। अपने डॉक्टर या फार्मासिस्ट से पूछें।",refB:"CuraSight की संदर्भ सूची से सामान्य जानकारी। अपने डॉक्टर या फार्मासिस्ट से पूछें।",many:"एक पर्चे में {n} दवाएं हैं। अपने डॉक्टर से पूछें कि क्या सभी अब भी ज़रूरी हैं।",group:"{names} एक ही समूह ({g}) की हैं। डॉक्टर से पूछें कि क्या आपको दोनों चाहिए।",ing:"{names} दोनों में {i} है। रोज़ की कुल मात्रा अपने फार्मासिस्ट से जांच लें।",unm:"पहचान नहीं हो सकी: {names}। स्पेलिंग जांचें या फार्मासिस्ट से पूछें।",safe:"सुरक्षा पहले।",safeT:"CuraSight केवल वही समझाता है जो डॉक्टर पहले ही लिख चुके हैं। यह रोग की पहचान नहीं करता, इलाज की सलाह नहीं देता, और आपके डॉक्टर या फार्मासिस्ट की जगह नहीं लेता।"}};
+const CL={antibiotic:"एंटीबायोटिक",antihistamine:"एंटीहिस्टामिन",antacid:"एंटासिड",analgesic:"दर्द निवारक",bronchodilator:"सांस की नली खोलने वाली",antihypertensive:"ब्लड प्रेशर की दवा",antidiabetic:"डायबिटीज़ की दवा",diuretic:"मूत्रवर्धक",corticosteroid:"स्टेरॉयड",antidepressant:"अवसादरोधी",other:"अन्य"};
+const UN={strip:"पट्टी",bottle:"बोतल",tube:"ट्यूब",packet:"पैकेट",vial:"शीशी",box:"डिब्बा",sachet:"सैशे",jar:"जार",pen:"पेन",cartridge:"कार्ट्रिज"};
+const IT={tablet:"गोलियों",tablets:"गोलियों",capsule:"कैप्सूल",capsules:"कैप्सूल",ml:"मि.ली.",gm:"ग्राम",g:"ग्राम",syrup:"सिरप",suspension:"सस्पेंशन",injection:"इंजेक्शन",cream:"क्रीम",gel:"जेल",drops:"बूंदों",solution:"घोल",inhaler:"इन्हेलर",ointment:"मरहम",lotion:"लोशन",powder:"पाउडर"};
+const pk=s=>{if(lang!=="hi")return s;const m=String(s).match(/^(\w+) of (\d+(?:\.\d+)?)\s*(\w+)?\s*(.*)$/i),u=m&&UN[m[1].toLowerCase()];if(!u)return s;return `${m[2]} ${[m[3],m[4]].filter(Boolean).map(w=>IT[w.toLowerCase()]||w).join(" ")} की ${u}`};
+const SAMPLE="Dr. A. Verma, City Clinic, Lucknow\nRx\n1. Tab Augmentin 625 - 1 tab twice daily x 5 days\n2. Tab Dolo 650 - SOS for fever\n3. Tab Pantop 40 - before breakfast\n4. Tab Cetzine - at night\n5. Tab Combiflam - after food if pain\n6. Tab Zenotrex 5 - once daily";
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let lang=CS.lang;
+const t=(k,p={})=>(T[lang][k]??T.en[k]??k).replace(/\{(\w+)\}/g,(_,x)=>p[x]??"");
+const rs=n=>"₹"+Number(n).toLocaleString("en-IN",{maximumFractionDigits:2});
+const cls=c=>lang==="hi"?(CL[Object.keys(CL).find(k=>String(c).toLowerCase().startsWith(k))]||c):c;
+let view={k:"empty"},note=null,imgFile=null;
+function setNote(k,p){note={k,p};const n=$("ocrNote");n.hidden=false;n.textContent=t(k,p)}
+function flag(f){const o=f.k==="many"?{n:f.n}:f.k==="group"?{names:f.names.join(lang==="hi"?" और ":" and "),g:cls(f.g)}:{names:f.names.join(lang==="hi"?" और ":" and "),i:f.i};return t(f.k,o)}
+function render(){const o=$("out");
+  if(view.k==="empty"){$("rTitle").textContent=t("rEmpty");o.innerHTML=`<div class="empty"><div class="spark">✦</div><b>${t("emptyT")}</b><span>${t("emptyS")}</span></div>`;return}
+  $("rTitle").textContent=t("rTitle");
+  if(view.k==="msg"){o.innerHTML=`<div class="empty">${esc(t(view.m,view.p))}</div>`;return}
+  const d=view.d,tt=d.totals;
+  const flags=d.flags.map(f=>`<div class="flag">${esc(flag(f))}</div>`).concat(d.unmatched.length?[`<div class="flag bad">${esc(t("unm",{names:d.unmatched.join(", ")}))}</div>`]:[]).join("");
+  const cards=d.medicines.map(m=>{const ex=m.explanation;
+    const alts=m.alternatives.map((a,i)=>`<div class="alt ${i?"":"best"}"><div>${esc(a.name)}<small>${esc(a.manufacturer)} · ${esc(pk(a.packaging))}${i?"":" · "+t("best")}</small></div><div>${rs(a.price)}</div><div class="s">${a.savePct>0?t("save",{n:a.savePct}):t("sim")}</div></div>`).join("");
+    return `<article class="med"><div class="mh"><div><h3>${esc(m.name)}</h3><div class="gen">${esc(m.ingredients)}</div><span class="badge">${esc(cls(m.therapeuticClass))}</span>${m.discontinued?`<span class="badge">${t("disc")}</span>`:""}</div><div class="price">${rs(m.price)}<small>${esc(pk(m.packaging))}</small></div></div>
+    ${ex?`<div class="ai"><span class="badge">${t(ex.source==="ai"?"aiB":"refB")}</span><p>${esc(lang==="hi"?ex.hi:ex.en)}</p></div>`:""}
+    <p style="color:var(--mu);font-size:.95rem">${esc(t("made",{m:m.manufacturer}))}</p><div class="alts">${alts||`<div class="note">${t("noAlt")}</div>`}</div></article>`}).join("");
+  o.innerHTML=`<div class="stats"><div class="stat"><b class="big">${d.medicines.length}</b><span>${t("s1")}</span></div><div class="stat"><b class="big">${rs(tt.brand)}</b><span>${t("s2")}</span></div><div class="stat s"><b class="big">${rs(tt.saving)}</b><span>${t("s3")}</span></div></div>${flags}${cards}${nextLinks(d)}`}
+function nextLinks(d){const q=d.historyId?"?h="+encodeURIComponent(d.historyId):"";return `<div class="next"><a class="btn p" href="/schedule.html${q}">${t("nxSc")}</a><a class="btn" href="/pharmacies.html">${t("nxPh")}</a><a class="btn" href="/history.html">${t("nxHi")}</a>${d.historyId?`<a class="btn" href="/report.html?h=${encodeURIComponent(d.historyId)}">${t("nxRep")}</a>`:""}</div>`}
+function applyLang(){document.documentElement.lang=lang;
+  document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));
+  $("sq").placeholder=t("sq");$("txt").placeholder=t("ph");
+  setNote(note?note.k:"nDefault",note&&note.p);if(!note)$("ocrNote").hidden=false;ocrExtra();render()}
+CS.onLang(l=>{lang=l;applyLang()});
+const sync=()=>{$("go").disabled=!($("verified").checked&&$("txt").value.trim())};
+$("txt").oninput=sync;$("verified").onchange=sync;
+async function decode(){
+  if(!$("txt").value.trim()){view={k:"msg",m:"noTxt"};render();return}
+  view={k:"msg",m:"decoding"};render();
+  try{const r=await fetch("/api/decode",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:$("txt").value})});
+    if(r.status===401){location.replace("/auth.html");return}if(!r.ok)throw new Error((await r.json()).error||r.status);const d=await r.json();
+    view=(!d.medicines.length&&!d.unmatched.length)?{k:"msg",m:"noMed"}:{k:"data",d}}
+  catch(e){view={k:"msg",m:"srv",p:{e:e.message}}}
+  render()}
+function sample(){$("txt").value=SAMPLE;$("verified").checked=true;sync();decode();$("res").scrollIntoView()}
+$("go").onclick=decode;$("hSam").onclick=sample;$("tSam").onclick=sample;$("hDec").onclick=()=>$("ws").scrollIntoView();
+$("tUp").onclick=()=>$("file").click();$("drop").onkeydown=e=>{if(e.key==="Enter")$("file").click()};
+$("file").onchange=e=>{const f=e.target.files[0];if(!f)return;if(f.size>15e6){setNote("nBig");return}imgFile=f;rot=0;$("prev").style.transform="";ocrRaw="";lowState=null;ocrExtra();$("ocrAll").hidden=true;const r=new FileReader();r.onload=()=>{$("prev").src=r.result;$("prev").hidden=false;$("drop").classList.add("has")};r.readAsDataURL(f);$("ocrRow").hidden=false};
+$("prev").onclick=e=>{e.preventDefault();e.stopPropagation();$("file").click()};
+$("hand").onchange=()=>{if($("hand").checked)setNote("nHand")};
+// ---- photo reading: rotate, two clean-up passes (soft contrast + local black/white), keep the better read, then tidy the text
+let rot=0,ocrRaw="",ocrKept="",showAll=false,lowState=null;
+const loadBitmap=async f=>{try{return await createImageBitmap(f)}catch(e){return await new Promise((ok,no)=>{const im=new Image();im.onload=()=>ok(im);im.onerror=()=>no(new Error("unsupported image"));im.src=URL.createObjectURL(f)})}};
+async function prep(file,mode){
+  const b=await loadBitmap(file),q=rot%2===1,bw=q?b.height:b.width,bh=q?b.width:b.height,sc=Math.max(.3,Math.min(2.5,2200/Math.max(bw,bh))),w=Math.round(bw*sc),h=Math.round(bh*sc);
+  const c=document.createElement("canvas");c.width=w;c.height=h;const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,w,h);
+  x.translate(w/2,h/2);x.rotate(rot*Math.PI/2);x.drawImage(b,-(q?h:w)/2,-(q?w:h)/2,q?h:w,q?w:h);
+  const d=x.getImageData(0,0,w,h),p=d.data,n=w*h,g=new Uint8ClampedArray(n),hist=new Uint32Array(256);
+  for(let i=0,j=0;i<p.length;i+=4,j++){const v=Math.round(.299*p[i]+.587*p[i+1]+.114*p[i+2]);g[j]=v;hist[v]++}
+  let lo=0,hi=255,s=0;for(;lo<255&&(s+=hist[lo])<n*.01;lo++);s=0;for(;hi>0&&(s+=hist[hi])<n*.01;hi--);   // ignore the darkest and brightest 1%
+  const k=255/Math.max(20,hi-lo);for(let j=0;j<n;j++)g[j]=Math.max(0,Math.min(255,(g[j]-lo)*k));
+  let out=g;
+  if(mode==="bin"){   // each pixel is compared with the average around it, so shadows and uneven light do not matter
+    const W=w+1,I=new Float64Array(W*(h+1));
+    for(let y=0;y<h;y++){let row=0;for(let u=0;u<w;u++){row+=g[y*w+u];I[(y+1)*W+u+1]=I[y*W+u+1]+row}}
+    const r=Math.max(10,Math.round(w/70));out=new Uint8ClampedArray(n);
+    for(let y=0;y<h;y++){const y0=Math.max(0,y-r),y1=Math.min(h,y+r+1);for(let u=0;u<w;u++){const x0=Math.max(0,u-r),x1=Math.min(w,u+r+1);
+      const m=(I[y1*W+x1]-I[y0*W+x1]-I[y1*W+x0]+I[y0*W+x0])/((y1-y0)*(x1-x0));out[y*w+u]=g[y*w+u]>m*.9?255:0}}}
+  for(let j=0,i=0;j<n;j++,i+=4)p[i]=p[i+1]=p[i+2]=out[j];
+  x.putImageData(d,0,0);if(b.close)b.close();return c}
+function loadTess(){return window.Tesseract?Promise.resolve():new Promise((ok,no)=>{const s=document.createElement("script");s.src="https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js";s.onload=ok;s.onerror=()=>no(new Error("reader download failed"));document.head.appendChild(s)})}
+const NAME={tb:"Tab",tab:"Tab",tabs:"Tab",tablet:"Tab",cap:"Cap",caps:"Cap",capsule:"Cap",syp:"Syp",sy:"Syp",syrup:"Syp",inj:"Inj",susp:"Susp",cream:"Cream",gel:"Gel",oint:"Oint",drops:"Drops"};
+const PFX2=/^(\d+\s*[.)]?\s*)?(tb|tabs?|tablet|caps?|capsule|syp|sy|syrup|inj|susp|cream|gel|oint|drops)\b\.?\s+(?=\S)/i;
+const MEDLINE=/^\W*(\d+\W+)?(rx\W*)?(tab|tablet|cap|capsule|syp|syrup|susp|inj|oint|cream|gel|drops)\b/i;
+const DIRS=/^\W*(for|x|twice|thrice|once|daily|after|before|with|at|in|every|if|sos|tds|bd|od|hs|qid|morning|night|\d\s*-\s*\d\s*-\s*\d|\d+\s*(days?|weeks?))\b/i;
+const SPACED=/^((?:\d+\s*[.)]?\s*)?)(t\s?a?\s?b|c\s?a\s?p|s\s?y\s?p)\b/i;
+// remove stray symbols, fix digits misread as letters (O->0, l->1, S->5) and spell the tab/cap/syp prefix the same way every time
+const tidy=s=>s.replace(/[^\p{L}\p{N}\s.,()\-–\/+%:]/gu," ").replace(/\b[0-9OolIS]{2,5}\b/g,t=>/\d/.test(t)?t.replace(/[Oo]/g,"0").replace(/[lI]/g,"1").replace(/S/g,"5"):t).replace(/\s+/g," ").trim().replace(SPACED,(m,n,w)=>n+({t:"Tab",c:"Cap",s:"Syp"})[w[0].toLowerCase()]).replace(PFX2,(m,n,w)=>(n?n.trim()+" ":"")+NAME[w.toLowerCase()]+" ");
+// keep medicine lines; a short directions line right under one (like "for 5 days") is joined onto it; everything else (clinic name, address...) is left out
+function keepMed(lines){if(!lines.some(l=>MEDLINE.test(l)))return{kept:lines,dropped:0};
+  const kept=[];let prev=false,dropped=0;
+  for(const l of lines){if(MEDLINE.test(l)){kept.push(l);prev=true}else if(prev&&DIRS.test(l)&&l.length<80)kept[kept.length-1]+=" - "+l;else{dropped++;prev=false}}
+  return{kept,dropped}}
+function ocrExtra(){const e=$("ocrLow"),s=lowState;if(!s||(!s.dropped&&!s.low.length)){e.hidden=true;return}
+  e.hidden=false;e.textContent=[s.dropped?t("nDrop",{n:s.dropped}):"",s.low.length?t("nLow",{l:s.low.join(" | ")}):""].filter(Boolean).join(" ");$("ocrAll").textContent=t(showAll?"bOnly":"bAll")}
+$("ocrAll").onclick=()=>{showAll=!showAll;$("txt").value=showAll?ocrRaw:ocrKept;sync();ocrExtra()};
+$("rot").onclick=()=>{rot=(rot+1)%4;$("prev").style.transform="rotate("+rot*90+"deg)"};
+$("read").onclick=async()=>{if(!imgFile)return;const b=$("read");b.disabled=true;$("rot").disabled=true;$("bar").hidden=false;$("fill").style.width="0";setNote("nPrep");lowState=null;ocrExtra();
+  let worker;
+  try{await loadTess();let pass=0;
+    worker=await Tesseract.createWorker("eng",1,{logger:m=>{if(m.status==="recognizing text"){const p=Math.round(pass*50+m.progress*50);$("fill").style.width=p+"%";setNote("nRead",{p})}else setNote("nLoad",{s:m.status})}});
+    await worker.setParameters({tessedit_pageseg_mode:"6",preserve_interword_spaces:"1"});
+    const A=await worker.recognize(await prep(imgFile,"soft"));pass=1;
+    const B=await worker.recognize(await prep(imgFile,"bin"));
+    const best=B.data.confidence>A.data.confidence+3?B:A;
+    const lines=best.data.text.split("\n").map(tidy).filter(s=>s.length>1),{kept,dropped}=keepMed(lines);
+    ocrRaw=lines.join("\n");ocrKept=kept.join("\n");showAll=false;$("txt").value=ocrKept;
+    lowState={dropped,low:(best.data.lines||[]).filter(l=>l.confidence<60&&tidy(l.text).length>3).map(l=>tidy(l.text)).slice(0,4)};$("ocrAll").hidden=!dropped;
+    $("verified").checked=false;sync();setNote($("hand").checked?"nHand":"nDone",{c:Math.round(best.data.confidence)});ocrExtra()}
+  catch(e){setNote("nFail",{e:e.message})}
+  finally{if(worker)try{await worker.terminate()}catch(e){}}
+  b.disabled=false;$("rot").disabled=false;$("bar").hidden=true};
+const PFX={tablet:"Tab",capsule:"Cap",syrup:"Syp",suspension:"Susp",injection:"Inj",cream:"Cream",gel:"Gel",drops:"Drops",ointment:"Oint"};let st;
+$("sq").oninput=()=>{clearTimeout(st);const q=$("sq").value.trim();if(q.length<2){$("sug").innerHTML="";return}st=setTimeout(async()=>{try{const r=await(await fetch("/api/suggest?q="+encodeURIComponent(q))).json();$("sug").innerHTML=r.map(m=>`<button data-n="${esc(m.name)}" data-f="${esc(m.form)}">${esc(m.name)}<small>${esc(m.manufacturer)} · ${esc(pk(m.packaging))}</small></button>`).join("")}catch(e){}},200)};
+$("sug").onclick=e=>{const b=e.target.closest("button");if(!b)return;const x=$("txt");x.value=(x.value.trim()?x.value.trim()+"\n":"")+(PFX[b.dataset.f]||"Tab")+" "+b.dataset.n;$("sq").value="";$("sug").innerHTML="";sync()};
+const openId=new URLSearchParams(location.search).get("h");
+if(openId)CS.userP.then(async()=>{try{const r=await fetch("/api/history/"+encodeURIComponent(openId),{credentials:"same-origin"});if(!r.ok)return;const x=await r.json();if(!x.result)return;
+  $("txt").value=x.text||"";$("verified").checked=true;sync();view={k:"data",d:{...x.result,historyId:openId}};render();$("res").scrollIntoView()}catch(e){}});
+
+applyLang();
+</script></body></html>

@@ -1,0 +1,41 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>CuraSight · Account</title><script src="common.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600&family=Noto+Sans+Devanagari:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css"></head><body data-page="ac"><div class="wrap">
+<div id="nav"></div>
+<section style="padding-top:28px"><div class="eb b" data-i="acEb"></div><div class="hd"><h2 data-i="acH"></h2><p data-i="acP"></p></div>
+<div class="card af"><div class="ch"><h3 data-i="acProf"></h3><span id="since"></span></div>
+<label><span data-i="acEmail"></span><input type="email" id="em" disabled></label>
+<label><span data-i="acName"></span><input type="text" id="nm" maxlength="80" autocomplete="name"></label>
+<button class="p" id="nmBtn" data-i="acSaveName"></button><p class="msg" id="nmMsg" hidden></p></div>
+<div class="card af"><div class="ch"><h3 data-i="acPw"></h3></div>
+<label><span data-i="acCur"></span><input type="password" id="pc" autocomplete="current-password"></label>
+<label><span data-i="acNew"></span><input type="password" id="pn" autocomplete="new-password"></label>
+<label><span data-i="acNew2"></span><input type="password" id="pn2" autocomplete="new-password"></label>
+<button class="p" id="pwBtn" data-i="acPwBtn"></button><p class="msg" id="pwMsg" hidden></p></div>
+<div class="card af" style="border-color:#7a2430"><div class="ch"><h3 data-i="acDanger"></h3></div><p class="note" data-i="acDangerP" style="margin-top:0"></p>
+<label><span data-i="acDelPw"></span><input type="password" id="dp" autocomplete="current-password"></label>
+<label class="chk" style="margin:12px 0"><input type="checkbox" id="dc"><span data-i="acDelChk"></span></label>
+<button class="danger" id="dBtn" data-i="acDelBtn" disabled></button><p class="msg" id="dMsg" hidden></p></div></section>
+</div>
+<script>
+const T={en:{acEb:"Account",acH:"Your account",acP:"Change your name or password, or delete your account.",acProf:"Profile",acName:"Full name",acEmail:"Email",acSince:"Member since {d}",acSaveName:"Save name",acSaved:"Saved.",acPw:"Change password",acCur:"Current password",acNew:"New password (at least 8 characters)",acNew2:"Confirm new password",acPwBtn:"Change password",acPwOk:"Password changed. Other devices were signed out.",acMismatch:"The new passwords do not match.",eBadCur:"The current password is incorrect.",eMany:"Too many wrong attempts. Please try again in a few minutes.",eShort:"The new password must be at least 8 characters.",eSame:"Please choose a password different from the current one.",eName:"Please enter your name.",acDanger:"Delete account",acDangerP:"This permanently deletes your account and every saved prescription. It cannot be undone.",acDelPw:"Enter your password to confirm",acDelChk:"I understand that everything will be deleted",acDelBtn:"Delete my account permanently",acErr:"Something went wrong. Please try again."},hi:{acEb:"खाता",acH:"आपका खाता",acP:"अपना नाम या पासवर्ड बदलें, या खाता हटाएं।",acProf:"प्रोफ़ाइल",acName:"पूरा नाम",acEmail:"ईमेल",acSince:"सदस्यता की तारीख: {d}",acSaveName:"नाम सेव करें",acSaved:"सेव हो गया।",acPw:"पासवर्ड बदलें",acCur:"मौजूदा पासवर्ड",acNew:"नया पासवर्ड (कम से कम 8 अक्षर)",acNew2:"नया पासवर्ड दोबारा लिखें",acPwBtn:"पासवर्ड बदलें",acPwOk:"पासवर्ड बदल गया। दूसरे डिवाइस से लॉग आउट हो गए हैं।",acMismatch:"दोनों नए पासवर्ड एक जैसे नहीं हैं।",eBadCur:"मौजूदा पासवर्ड गलत है।",eMany:"बहुत ज़्यादा गलत कोशिशें। कुछ मिनट बाद फिर कोशिश करें।",eShort:"नया पासवर्ड कम से कम 8 अक्षर का होना चाहिए।",eSame:"कृपया मौजूदा पासवर्ड से अलग पासवर्ड चुनें।",eName:"कृपया अपना नाम लिखें।",acDanger:"खाता हटाएं",acDangerP:"इससे आपका खाता और सारे सेव किए पर्चे हमेशा के लिए हट जाएंगे। इसे वापस नहीं लाया जा सकता।",acDelPw:"पुष्टि के लिए अपना पासवर्ड लिखें",acDelChk:"मैं समझता/समझती हूं कि सब कुछ हट जाएगा",acDelBtn:"मेरा खाता हमेशा के लिए हटाएं",acErr:"कुछ गड़बड़ हो गई। फिर कोशिश करें।"}};
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let lang=CS.lang;const t=(k,p={})=>(T[lang][k]??T.en[k]??k).replace(/\{(\w+)\}/g,(_,x)=>p[x]??"");
+const rs=n=>"₹"+Number(n).toLocaleString("en-IN",{maximumFractionDigits:2});
+const pf=async(u,o={})=>{const r=await fetch(u,{credentials:"same-origin",...o});if(r.status===401){location.replace("/auth.html");throw 0}return r};
+const CODES={bad_current:"eBadCur",too_many:"eMany",short_pw:"eShort",same_pw:"eSame",bad_name:"eName"};
+let msgs={};   // key of the last message per box, so it can be translated when the language changes
+function show(id,key,ok){msgs[id]={key,ok};paint()}
+function paint(){for(const id of["nmMsg","pwMsg","dMsg"]){const e=$(id),m=msgs[id];e.hidden=!m;if(m){e.textContent=t(m.key);e.className="msg "+(m.ok?"ok":"err")}}}
+async function call(url,method,body){const r=await pf(url,{method,headers:{"Content-Type":"application/json"},body:JSON.stringify(body)});const j=await r.json().catch(()=>({}));return{ok:r.ok,key:CODES[j.code]||"acErr"}}
+function applyLang(){document.documentElement.lang=lang;document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));paint();
+  if(CS.user&&CS.user.createdAt)$("since").textContent=t("acSince",{d:new Date(CS.user.createdAt).toLocaleDateString(lang==="hi"?"hi-IN":"en-IN",{dateStyle:"medium"})})}
+$("nmBtn").onclick=async()=>{const r=await call("/api/account/name","POST",{name:$("nm").value});if(r.ok){CS.user.name=$("nm").value.trim();const c=document.getElementById("userChip");if(c)c.textContent=CS.user.name}show("nmMsg",r.ok?"acSaved":r.key,r.ok)};
+$("pwBtn").onclick=async()=>{if($("pn").value!==$("pn2").value)return show("pwMsg","acMismatch",false);
+  const r=await call("/api/account/password","POST",{current:$("pc").value,next:$("pn").value});if(r.ok)$("pc").value=$("pn").value=$("pn2").value="";show("pwMsg",r.ok?"acPwOk":r.key,r.ok)};
+const dsync=()=>{$("dBtn").disabled=!($("dc").checked&&$("dp").value)};$("dc").onchange=dsync;$("dp").oninput=dsync;
+$("dBtn").onclick=async()=>{const r=await call("/api/account","DELETE",{password:$("dp").value});if(!r.ok)return show("dMsg",r.key,false);try{localStorage.removeItem("cs-sch")}catch(e){}location.replace("/auth.html?mode=signup")};
+CS.userP.then(u=>{$("em").value=u.email||"";$("nm").value=u.name||"";applyLang()});
+CS.onLang(l=>{lang=l;applyLang()});applyLang();
+</script></body></html>

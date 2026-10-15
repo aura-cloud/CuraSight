@@ -1,0 +1,49 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>CuraSight · Report</title><script src="common.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600&family=Noto+Sans+Devanagari:wght@400;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}html.auth-pending body{visibility:hidden}
+body{margin:0;background:#eef1f6;color:#111827;font:15px/1.55 Hind,'Noto Sans Devanagari',system-ui,sans-serif}
+.bar{max-width:820px;margin:18px auto 0;padding:0 16px;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.bar a,.bar button{font:600 15px Hind,'Noto Sans Devanagari',sans-serif;border-radius:10px;border:1px solid #c7cdd8;background:#fff;color:#111827;padding:10px 18px;text-decoration:none;cursor:pointer}.bar button{background:#0a63ff;border-color:#0a63ff;color:#fff}.bar small{color:#4b5563}
+.sheet{max-width:820px;margin:14px auto 40px;background:#fff;padding:36px 40px;border:1px solid #d7dce5;border-radius:6px}
+h1{font:400 28px 'Archivo Black','Noto Sans Devanagari',sans-serif;margin:0}html[lang=hi] h1,html[lang=hi] h2{font-family:'Noto Sans Devanagari',sans-serif;font-weight:700}
+.brand{color:#0a63ff;font:400 13px 'Archivo Black',sans-serif;letter-spacing:.14em;text-transform:uppercase}.meta{color:#4b5563;margin:6px 0 20px}
+.sum{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin:0 0 22px}.sum div{border:1px solid #d7dce5;border-radius:8px;padding:12px 14px}.sum b{display:block;font-size:20px}.sum span{color:#4b5563;font-size:13px}.sum .g b{color:#0a7a4f}
+h2{font:400 17px 'Archivo Black','Noto Sans Devanagari',sans-serif;margin:22px 0 10px}
+.med{border:1px solid #d7dce5;border-radius:8px;padding:14px 16px;margin-bottom:12px;break-inside:avoid}.med h3{margin:0 0 2px;font:700 17px Hind,'Noto Sans Devanagari',sans-serif}.med .sub{color:#4b5563;font-size:13px;margin-bottom:8px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:6px 18px}.g2 p{margin:0}.g2 small{display:block;color:#6b7280;font-size:12px;text-transform:uppercase;letter-spacing:.04em}.full{grid-column:1/-1}
+.flag{border-left:4px solid #e8a317;background:#fff8e8;padding:8px 12px;margin:0 0 8px;border-radius:0 6px 6px 0}.save{color:#0a7a4f;font-weight:600}.disc{color:#4b5563;font-size:12.5px;border-top:1px solid #d7dce5;margin-top:22px;padding-top:12px}
+.msg{max-width:820px;margin:40px auto;text-align:center;color:#4b5563}
+@media print{body{background:#fff}.bar{display:none}.sheet{border:0;margin:0;padding:0;max-width:none}@page{margin:14mm}}
+@media(max-width:600px){.sheet{padding:20px}.sum,.g2{grid-template-columns:1fr}}
+</style></head><body data-page="rp">
+<div class="bar"><a href="/history.html" id="back"></a><button id="prt"></button><small id="hint"></small></div>
+<div id="box"><p class="msg" id="ld"></p></div>
+<script>
+const T={en:{rpTitle:"Prescription report",rpFor:"Prepared for {n}",rpOn:"Date of prescription: {d}",rpMeds:"Medicines",rpBrand:"At brand prices",rpCheap:"At cheapest equivalent",rpSave:"Possible saving",rpIng:"Ingredients",rpPrice:"Price of the pack",rpDir:"Directions on the prescription",rpUse:"What it is generally used for",rpAlt:"Cheaper equivalent (same ingredients and form)",rpNoAlt:"No cheaper equivalent found",rpNoDir:"Not detected",rpAs:"As needed",rpTimes:"{n} time(s) a day",rpDays:"{n} days",rpBefore:"before food",rpAfter:"after food",rpWith:"with food",rpFlags:"Things to ask your doctor or pharmacist",rpMany:"This prescription has {n} medicines. Ask your doctor or pharmacist to review them together.",rpGroup:"{names} are in the same group ({g}). Ask if you need all of them.",rpIngF:"{names} share the ingredient {i}. Taking both may double it. Ask your pharmacist.",rpUnm:"Not identified (please check with your pharmacist)",rpDisc:"This report is general information, not medical advice. Prices come from a public medicine price list and may differ at your pharmacy. Do not start, stop or change any medicine without asking your doctor or pharmacist.",rpPrint:"Save as PDF / Print",rpBack:"Back to history",rpHint:"In the print window, choose “Save as PDF” as the printer.",rpErr:"Could not load this report.",rpLoad:"Loading…",rpDisc2:"Discontinued"},hi:{rpTitle:"पर्चे की रिपोर्ट",rpFor:"{n} के लिए तैयार",rpOn:"पर्चे की तारीख: {d}",rpMeds:"दवाएं",rpBrand:"ब्रांड की कीमत पर",rpCheap:"सबसे सस्ते विकल्प पर",rpSave:"संभावित बचत",rpIng:"सामग्री",rpPrice:"पैक की कीमत",rpDir:"पर्चे में लिखे निर्देश",rpUse:"यह आमतौर पर किसलिए इस्तेमाल होती है",rpAlt:"सस्ता बराबर विकल्प (वही सामग्री और रूप)",rpNoAlt:"कोई सस्ता विकल्प नहीं मिला",rpNoDir:"पता नहीं चला",rpAs:"ज़रूरत पड़ने पर",rpTimes:"दिन में {n} बार",rpDays:"{n} दिन",rpBefore:"खाने से पहले",rpAfter:"खाने के बाद",rpWith:"खाने के साथ",rpFlags:"डॉक्टर या फार्मासिस्ट से पूछने की बातें",rpMany:"इस पर्चे में {n} दवाएं हैं। डॉक्टर या फार्मासिस्ट से इन्हें साथ में जंचवाएं।",rpGroup:"{names} एक ही समूह ({g}) की हैं। पूछें कि क्या सब ज़रूरी हैं।",rpIngF:"{names} में एक ही सामग्री {i} है। दोनों लेने से मात्रा दोगुनी हो सकती है। फार्मासिस्ट से पूछें।",rpUnm:"पहचान नहीं हुई (कृपया फार्मासिस्ट से जांचें)",rpDisc:"यह रिपोर्ट सामान्य जानकारी है, चिकित्सा सलाह नहीं। कीमतें एक सार्वजनिक दवा मूल्य सूची से हैं और आपकी फार्मेसी में अलग हो सकती हैं। डॉक्टर या फार्मासिस्ट से पूछे बिना कोई दवा शुरू, बंद या न बदलें।",rpPrint:"PDF सेव करें / प्रिंट करें",rpBack:"हिस्ट्री पर वापस",rpHint:"प्रिंट विंडो में प्रिंटर के रूप में “Save as PDF” चुनें।",rpErr:"यह रिपोर्ट लोड नहीं हो सकी।",rpLoad:"लोड हो रहा है…",rpDisc2:"बंद हो चुकी"}};
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let lang=CS.lang;const t=(k,p={})=>(T[lang][k]??T.en[k]??k).replace(/\{(\w+)\}/g,(_,x)=>p[x]??"");
+const rs=n=>"₹"+Number(n).toLocaleString("en-IN",{maximumFractionDigits:2});
+const pf=async(u,o={})=>{const r=await fetch(u,{credentials:"same-origin",...o});if(r.status===401){location.replace("/auth.html");throw 0}return r};
+let ROW=null,state="load";
+const id=new URLSearchParams(location.search).get("h");
+const fmt=v=>{try{return new Date(v).toLocaleDateString(lang==="hi"?"hi-IN":"en-IN",{dateStyle:"long"})}catch(e){return String(v)}};
+function dirs(s){if(!s)return t("rpNoDir");if(s.sos)return t("rpAs")+(s.food?", "+t("rp"+s.food[0].toUpperCase()+s.food.slice(1)):"");
+  const p=[];if(s.perDay)p.push(t("rpTimes",{n:s.perDay}));if(s.food)p.push(t("rp"+s.food[0].toUpperCase()+s.food.slice(1)));if(s.days)p.push(t("rpDays",{n:s.days}));return p.join(" · ")||t("rpNoDir")}
+function render(){document.documentElement.lang=lang;$("back").textContent="← "+t("rpBack");$("prt").textContent=t("rpPrint");$("hint").textContent=t("rpHint");
+  const b=$("box");if(state==="load"){b.innerHTML=`<p class="msg">${t("rpLoad")}</p>`;return}if(state==="err"){b.innerHTML=`<p class="msg">${t("rpErr")}</p>`;return}
+  const r=ROW.result,tot=r.totals||{},meds=r.medicines||[];
+  const cards=meds.map(m=>{const a=(m.alternatives||[])[0],ex=m.explanation&&(m.explanation[lang]||m.explanation.en);
+    return `<div class="med"><h3>${esc(m.name)}</h3><div class="sub">${esc([m.manufacturer,m.form,m.discontinued?t("rpDisc2"):""].filter(Boolean).join(" · "))}</div><div class="g2">
+    <p><small>${t("rpIng")}</small>${esc(m.ingredients||"—")}</p><p><small>${t("rpPrice")}</small>${rs(m.price)}${m.packaging?" · "+esc(m.packaging):""}</p>
+    <p><small>${t("rpDir")}</small>${esc(dirs(m.schedule))}</p><p><small>${t("rpAlt")}</small>${a?`${esc(a.name)} (${esc(a.manufacturer||"")}) · ${rs(a.price)} · <span class="save">${a.savePct}%</span>`:t("rpNoAlt")}</p>
+    ${ex?`<p class="full"><small>${t("rpUse")}</small>${esc(ex)}</p>`:""}</div></div>`}).join("");
+  const fl=(r.flags||[]).map(f=>f.k==="many"?t("rpMany",{n:f.n}):f.k==="group"?t("rpGroup",{names:f.names.join(", "),g:f.g}):f.k==="ing"?t("rpIngF",{names:f.names.join(", "),i:f.i}):"").filter(Boolean);
+  const unm=(r.unmatched||[]).map(u=>`<div class="flag">${esc(u)} — ${t("rpUnm")}</div>`).join("");
+  b.innerHTML=`<div class="sheet"><div class="brand">CuraSight</div><h1>${t("rpTitle")}</h1><div class="meta">${t("rpFor",{n:esc((CS.user&&(CS.user.name||CS.user.email))||"")})} · ${t("rpOn",{d:fmt(ROW.createdAt)})}</div>
+  <div class="sum"><div><b>${rs(tot.brand||0)}</b><span>${t("rpBrand")}</span></div><div><b>${rs(tot.cheapest||0)}</b><span>${t("rpCheap")}</span></div><div class="g"><b>${rs(tot.saving||0)}</b><span>${t("rpSave")}</span></div></div>
+  <h2>${t("rpMeds")} (${meds.length})</h2>${cards}${unm}${fl.length?`<h2>${t("rpFlags")}</h2>${fl.map(x=>`<div class="flag">${esc(x)}</div>`).join("")}`:""}<p class="disc">${t("rpDisc")}</p></div>`}
+$("prt").onclick=()=>window.print();
+async function load(){await CS.userP;if(!id){state="err";return render()}try{const r=await pf("/api/history/"+encodeURIComponent(id));if(!r.ok)throw 1;ROW=await r.json();if(!ROW.result)throw 1;state="ok"}catch(e){state="err"}render()}
+CS.onLang(l=>{lang=l;render()});render();load();
+</script></body></html>

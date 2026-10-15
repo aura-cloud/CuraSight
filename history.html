@@ -1,0 +1,28 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>CuraSight · History</title><script src="common.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600&family=Noto+Sans+Devanagari:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css"></head><body data-page="hi"><div class="wrap">
+<div id="nav"></div>
+<section style="padding-top:28px"><div class="eb b" data-i="hEb"></div><div class="hd"><h2 data-i="hH"></h2><p data-i="hP"></p></div><div id="hl"></div><div class="tabs"><button id="hClr" data-i="hClr" hidden></button></div></section>
+</div>
+<script>
+const T={en:{hEb:"Your history",hH:"Previous prescriptions",hP:"Only your own decoded prescriptions are shown here.",hLoad:"Loading history…",hNone:"No history yet.",hNoneS:"Your decoded prescriptions will appear here.",hMed:"{n} medicine(s)",hUnm:"{n} not identified",hSave:"Possible saving {n}",hNoSave:"No saving found",hRep:"Report (PDF)",hView:"View",hSch:"Schedule",hDel:"Delete",hClr:"Clear all history",hConfirmDel:"Delete this entry?",hConfirmAll:"Delete all your history? This cannot be undone.",hErr:"Could not load your history."},hi:{hEb:"आपकी हिस्ट्री",hH:"पहले के पर्चे",hP:"यहां सिर्फ़ आपके अपने डिकोड किए पर्चे दिखते हैं।",hLoad:"हिस्ट्री लोड हो रही है…",hNone:"अभी कोई हिस्ट्री नहीं है।",hNoneS:"आपके डिकोड किए पर्चे यहां दिखेंगे।",hMed:"{n} दवा/दवाएं",hUnm:"{n} की पहचान नहीं हुई",hSave:"संभावित बचत {n}",hNoSave:"कोई बचत नहीं मिली",hRep:"रिपोर्ट (PDF)",hView:"देखें",hSch:"शेड्यूल",hDel:"हटाएं",hClr:"पूरी हिस्ट्री मिटाएं",hConfirmDel:"यह एंट्री हटाएं?",hConfirmAll:"पूरी हिस्ट्री मिटाएं? इसे वापस नहीं लाया जा सकता।",hErr:"आपकी हिस्ट्री लोड नहीं हो सकी।"}};
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let lang=CS.lang;const t=(k,p={})=>(T[lang][k]??T.en[k]??k).replace(/\{(\w+)\}/g,(_,x)=>p[x]??"");
+const rs=n=>"₹"+Number(n).toLocaleString("en-IN",{maximumFractionDigits:2});
+const fmtDate=v=>{try{return new Date(v).toLocaleString(lang==="hi"?"hi-IN":"en-IN",{dateStyle:"medium",timeStyle:"short"})}catch(e){return String(v)}};
+const pf=async(u,o={})=>{const r=await fetch(u,{credentials:"same-origin",...o});if(r.status===401){location.replace("/auth.html");throw 0}return r};
+let H=null,failed=false;
+async function load(){try{const r=await pf("/api/history");H=r.ok?await r.json():[];failed=!r.ok}catch(e){H=[];failed=true}render()}
+function render(){document.documentElement.lang=lang;document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));
+  const box=$("hl");$("hClr").hidden=!(H&&H.length);
+  if(H===null){box.innerHTML=`<div class="empty">${t("hLoad")}</div>`;return}
+  if(failed){box.innerHTML=`<div class="empty">${t("hErr")}</div>`;return}
+  if(!H.length){box.innerHTML=`<div class="empty"><div class="spark">◷</div><b>${t("hNone")}</b><span>${t("hNoneS")}</span></div>`;return}
+  box.innerHTML=H.map(h=>{const id=esc(h.id),names=(h.medicines||[]).map(m=>m.name).slice(0,5).join(", ");
+    return `<article class="history-item"><div><h3>${esc(fmtDate(h.createdAt))}</h3><p>${t("hMed",{n:h.medicineCount})}${h.unmatched&&h.unmatched.length?" · "+t("hUnm",{n:h.unmatched.length}):""}</p><p>${esc(names)}</p></div><div class="hs"><b>${rs(h.brandTotal)}</b><span>${h.saving>0?t("hSave",{n:rs(h.saving)}):t("hNoSave")}</span><div class="tabs"><a class="btn p" href="/?h=${id}">${t("hView")}</a><a class="btn" href="/schedule.html?h=${id}">${t("hSch")}</a><a class="btn" href="/report.html?h=${id}">${t("hRep")}</a><button data-d="${id}">${t("hDel")}</button></div></div></article>`}).join("")}
+$("hl").onclick=async e=>{const b=e.target.closest("[data-d]");if(!b||!confirm(t("hConfirmDel")))return;
+  try{await pf("/api/history/"+encodeURIComponent(b.dataset.d),{method:"DELETE"});H=H.filter(x=>x.id!==b.dataset.d);render()}catch(x){}};
+$("hClr").onclick=async()=>{if(!confirm(t("hConfirmAll")))return;try{await pf("/api/history",{method:"DELETE"});H=[];render()}catch(x){}};
+CS.onLang(l=>{lang=l;render()});render();load();
+</script></body></html>

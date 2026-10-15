@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>CuraSight · Savings</title><script src="common.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600&family=Noto+Sans+Devanagari:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css"></head><body data-page="sv"><div class="wrap">
+<div id="nav"></div>
+<section style="padding-top:28px"><div class="eb b" data-i="svEb"></div><div class="hd"><h2 data-i="svH"></h2><p data-i="svP"></p></div><div id="svBox"></div></section>
+</div>
+<script>
+const T={en:{svEb:"Savings",svH:"Your savings dashboard",svP:"How much you could save by choosing equivalent cheaper medicines (same ingredients and form), across all your decoded prescriptions.",svRx:"Prescriptions",svMed:"Medicines",svBrand:"At brand prices",svSave:"Possible saving",svPct:"{p}% of the brand-price total",svMonths:"By month",svPay:"At cheapest equivalent",svTop:"Biggest savings",svSave2:"Save {a} ({p}%)",svNone:"No prescriptions yet.",svNoneS:"Decode a prescription on the home page to see your savings here.",svHome:"Go to home page",svPrint:"Save this page as PDF",svNote:"Prices come from a public medicine price list and may differ at your pharmacy. Ask your doctor or pharmacist before switching any medicine.",svErr:"Could not load your savings.",svLoad:"Loading…",svInst:"instead of"},hi:{svEb:"बचत",svH:"आपका बचत डैशबोर्ड",svP:"आपके सभी डिकोड किए पर्चों में, बराबर की सस्ती दवाएं (वही सामग्री और रूप) चुनकर आप कितनी बचत कर सकते हैं।",svRx:"पर्चे",svMed:"दवाएं",svBrand:"ब्रांड की कीमत पर",svSave:"संभावित बचत",svPct:"ब्रांड कीमत के कुल का {p}%",svMonths:"महीने के अनुसार",svPay:"सबसे सस्ते विकल्प पर",svTop:"सबसे ज़्यादा बचत",svSave2:"{a} बचाएं ({p}%)",svNone:"अभी कोई पर्चा नहीं है।",svNoneS:"अपनी बचत यहां देखने के लिए होम पेज पर कोई पर्चा डिकोड करें।",svHome:"होम पेज पर जाएं",svPrint:"इस पेज को PDF में सेव करें",svNote:"कीमतें एक सार्वजनिक दवा मूल्य सूची से ली गई हैं और आपकी फार्मेसी में अलग हो सकती हैं। कोई भी दवा बदलने से पहले अपने डॉक्टर या फार्मासिस्ट से पूछें।",svErr:"आपकी बचत लोड नहीं हो सकी।",svLoad:"लोड हो रहा है…",svInst:"की जगह"}};
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let lang=CS.lang;const t=(k,p={})=>(T[lang][k]??T.en[k]??k).replace(/\{(\w+)\}/g,(_,x)=>p[x]??"");
+const rs=n=>"₹"+Number(n).toLocaleString("en-IN",{maximumFractionDigits:2});
+const pf=async(u,o={})=>{const r=await fetch(u,{credentials:"same-origin",...o});if(r.status===401){location.replace("/auth.html");throw 0}return r};
+let S=null,state="load";
+const monthName=m=>{try{return new Date(m+"-01T00:00:00Z").toLocaleDateString(lang==="hi"?"hi-IN":"en-IN",{month:"short",year:"numeric",timeZone:"UTC"})}catch(e){return m}};
+function render(){document.documentElement.lang=lang;document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));const b=$("svBox");
+  if(state==="load"){b.innerHTML=`<div class="empty">${t("svLoad")}</div>`;return}
+  if(state==="err"){b.innerHTML=`<div class="empty">${t("svErr")}</div>`;return}
+  if(!S.count){b.innerHTML=`<div class="empty"><div class="spark">₹</div><b>${t("svNone")}</b><span>${t("svNoneS")}</span><br><br><a class="btn p" href="/">${t("svHome")}</a></div>`;return}
+  const mx=Math.max(1,...S.series.map(m=>m.brand));
+  const bars=S.series.map(m=>`<div class="mrow"><span>${esc(monthName(m.month))}</span><div class="mbar" title="${esc(rs(m.brand))}"><i style="width:${Math.max(0,(m.brand-m.saving)/mx*100)}%"></i><u style="width:${Math.max(0,m.saving/mx*100)}%"></u></div><b>${rs(m.saving)}</b></div>`).join("");
+  const top=S.top.map(x=>`<div class="top-row"><div><b>${esc(x.name)}</b> <small>${rs(x.price)} · ${t("svInst")} ${esc(x.alt)} ${rs(x.altPrice)}</small></div><b class="sv">${t("svSave2",{a:rs(x.save),p:x.savePct})}</b></div>`).join("");
+  b.innerHTML=`<div class="stats"><div class="stat"><b>${S.count}</b><span>${t("svRx")} · ${S.medicines} ${t("svMed")}</span></div><div class="stat"><b>${rs(S.brand)}</b><span>${t("svBrand")}</span></div><div class="stat s"><b>${rs(S.saving)}</b><span>${t("svSave")} · ${t("svPct",{p:S.pct})}</span></div></div>
+  <div class="card"><div class="ch"><h3>${t("svMonths")}</h3></div><div class="leg"><span><i style="background:var(--bl)"></i>${t("svPay")}</span><span><i style="background:var(--ok)"></i>${t("svSave")}</span></div>${bars}</div>
+  ${top?`<div class="card"><div class="ch"><h3>${t("svTop")}</h3></div>${top}</div>`:""}
+  <p class="note">${t("svNote")}</p><div class="tabs"><button class="p" id="pr">${t("svPrint")}</button></div>`;
+  $("pr").onclick=()=>window.print()}
+async function load(){await CS.userP;try{const r=await pf("/api/stats");if(!r.ok)throw 1;S=await r.json();state="ok"}catch(e){state="err"}render()}
+CS.onLang(l=>{lang=l;render()});render();load();
+</script></body></html>

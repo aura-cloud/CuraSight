@@ -1,0 +1,67 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>CuraSight · Schedule</title><script src="common.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600&family=Noto+Sans+Devanagari:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css"></head><body data-page="sc"><div class="wrap">
+<div id="nav"></div>
+<section style="padding-top:28px"><div class="eb b" data-i="scEb"></div><div class="hd"><h2 data-i="scH"></h2><p data-i="scHp"></p></div><div id="scBox"></div></section>
+</div>
+<script>
+const T={en:{scEb:"Medicine schedule",scH:"Your daily medicine schedule",scHp:"Pick a prescription, check the times, then add reminders to your calendar.",scSrc:"Prescription",scEmptyT:"No decoded prescriptions yet.",scEmptyS:"Decode a prescription on the home page first, then come back to set reminders.",scHome:"Go to home page",scNote:"Built from the directions written in your prescription. Check each row against the original and correct anything that is wrong. If it differs from your doctor's instructions, follow your doctor.",scStart:"Start date",scPer:"Times a day",scDays:"Days",scFood:"Food",scFnone:"No note",scF_before:"Before food",scF_after:"After food",scF_with:"With food",scAsNeeded:"As needed",scSOS:"Taken only when needed (no fixed times).",scAssumed:"check this row",scGlance:"Your day at a glance",scNone:"No fixed-time medicines to schedule.",scIcs:"Download calendar reminders (.ics)",scNotif:"Remind me on this device",scNotifOff:"Stop reminders on this device",scIcsHelp:"Open the .ics file on your phone or computer to add the reminders to your calendar app.",scNotifNote:"Reminders on this device work only while a CuraSight page is open in your browser.",scNotifDenied:"Notifications are blocked. Allow them in your browser settings.",scNoNotif:"This browser does not support reminders. Use the calendar file instead.",scTake:"Time to take {m}",scIcsDesc:"Reminder from CuraSight. Take it exactly as your doctor or pharmacist told you."},hi:{scEb:"दवा का शेड्यूल",scH:"आपकी दवाओं का रोज़ का शेड्यूल",scHp:"कोई पर्चा चुनें, समय जांचें, फिर रिमाइंडर अपने कैलेंडर में जोड़ें।",scSrc:"पर्चा",scEmptyT:"अभी कोई डिकोड किया हुआ पर्चा नहीं है।",scEmptyS:"पहले होम पेज पर कोई पर्चा डिकोड करें, फिर रिमाइंडर लगाने यहां आएं।",scHome:"होम पेज पर जाएं",scNote:"यह आपके पर्चे में लिखे निर्देशों से बना है। हर पंक्ति को असली पर्चे से मिलाएं और जो गलत हो उसे सुधारें। अगर यह डॉक्टर के निर्देशों से अलग हो तो डॉक्टर की बात मानें।",scStart:"शुरू होने की तारीख",scPer:"दिन में कितनी बार",scDays:"दिन",scFood:"खाना",scFnone:"कोई नोट नहीं",scF_before:"खाने से पहले",scF_after:"खाने के बाद",scF_with:"खाने के साथ",scAsNeeded:"ज़रूरत पड़ने पर",scSOS:"सिर्फ़ ज़रूरत पड़ने पर लें (कोई तय समय नहीं)।",scAssumed:"इस पंक्ति को जांचें",scGlance:"आपका दिन एक नज़र में",scNone:"तय समय वाली कोई दवा नहीं है।",scIcs:"कैलेंडर रिमाइंडर डाउनलोड करें (.ics)",scNotif:"इस डिवाइस पर रिमाइंड करें",scNotifOff:"इस डिवाइस पर रिमाइंडर बंद करें",scIcsHelp:"रिमाइंडर अपने कैलेंडर ऐप में जोड़ने के लिए .ics फ़ाइल फ़ोन या कंप्यूटर पर खोलें।",scNotifNote:"इस डिवाइस के रिमाइंडर तभी आते हैं जब CuraSight का कोई पेज ब्राउज़र में खुला हो।",scNotifDenied:"नोटिफ़िकेशन बंद हैं। ब्राउज़र की सेटिंग में अनुमति दें।",scNoNotif:"यह ब्राउज़र रिमाइंडर सपोर्ट नहीं करता। कैलेंडर फ़ाइल इस्तेमाल करें।",scTake:"{m} लेने का समय",scIcsDesc:"CuraSight की ओर से रिमाइंडर। इसे वैसे ही लें जैसा आपके डॉक्टर या फार्मासिस्ट ने बताया है।"}};
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let lang=CS.lang;const t=(k,p={})=>(T[lang][k]??T.en[k]??k).replace(/\{(\w+)\}/g,(_,x)=>p[x]??"");
+const rs=n=>"₹"+Number(n).toLocaleString("en-IN",{maximumFractionDigits:2});
+const fmtDate=v=>{try{return new Date(v).toLocaleString(lang==="hi"?"hi-IN":"en-IN",{dateStyle:"medium",timeStyle:"short"})}catch(e){return String(v)}};
+const pf=async(u,o={})=>{const r=await fetch(u,{credentials:"same-origin",...o});if(r.status===401){location.replace("/auth.html");throw 0}return r};
+let SC=null,HL=[],wasNotify=false;
+const pad=n=>String(n).padStart(2,"0"),isoDate=d=>d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());
+const defTimes=n=>({1:["09:00"],2:["08:00","20:00"],3:["08:00","14:00","20:00"],4:["07:00","12:00","17:00","22:00"]})[n]||[];
+const fmtT=x=>{try{return new Date("2000-01-01T"+x+":00").toLocaleTimeString(lang==="hi"?"hi-IN":"en-IN",{hour:"numeric",minute:"2-digit"})}catch(e){return x}};
+const scSave=()=>{try{localStorage.setItem("cs-sch",JSON.stringify(SC))}catch(e){}};   // common.js reads this to fire reminders on every page
+function scBuild(d,id){
+  SC={h:id,start:isoDate(new Date()),notify:SC?SC.notify:wasNotify,user:CS.user&&CS.user.email,msg:"",rows:d.medicines.map(m=>{const s=m.schedule||{},per=s.sos?0:(s.perDay||1);
+    return{name:m.name,dose:s.dose||"",per,times:per?((s.times||[]).length===per?s.times.slice():defTimes(per)):[],food:s.food||"",days:s.days||30,assumed:!s.sos&&(!s.perDay||!s.days)}})};
+  scSave()}
+async function loadOne(id){try{const r=await pf("/api/history/"+encodeURIComponent(id));if(!r.ok)return false;const x=await r.json();if(!x.result||!x.result.medicines)return false;scBuild(x.result,id);return true}catch(e){return false}}
+async function init(){await CS.userP;
+  try{const r=await pf("/api/history");HL=r.ok?await r.json():[]}catch(e){HL=[]}
+  const h=new URLSearchParams(location.search).get("h");let saved=null;try{saved=JSON.parse(localStorage.getItem("cs-sch")||"null")}catch(e){}
+  if(saved&&saved.user&&CS.user&&saved.user!==CS.user.email)saved=null;
+  wasNotify=!!(saved&&saved.notify);
+  if(saved&&saved.h&&(!h||h===saved.h)&&HL.some(x=>x.id===saved.h)){SC=saved;SC.msg=""}   // keep the user's own edits
+  else if(!(h&&await loadOne(h))&&HL.length)await loadOne(HL[0].id);
+  render()}
+function render(){document.documentElement.lang=lang;document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));
+  const box=$("scBox");if(!SC){box.innerHTML=`<div class="empty"><div class="spark">◷</div><b>${t("scEmptyT")}</b><span>${t("scEmptyS")}</span><br><br><a class="btn p" href="/">${t("scHome")}</a></div>`;return}
+  const fo=r=>["","before","after","with"].map(v=>`<option value="${v}"${v===r.food?" selected":""}>${t(v?"scF_"+v:"scFnone")}</option>`).join("");
+  const opts=HL.map(x=>`<option value="${esc(x.id)}"${x.id===SC.h?" selected":""}>${esc(fmtDate(x.createdAt))} · ${esc((x.medicines||[]).map(m=>m.name).slice(0,3).join(", "))}</option>`).join("");
+  const rows=SC.rows.map((r,i)=>`<div class="sr"><div class="sn"><b>${esc(r.name)}</b>${r.dose?` <span class="badge">${esc(r.dose)}</span>`:""}${r.assumed?` <span class="badge" style="color:var(--wn);border-color:var(--wn)">${t("scAssumed")}</span>`:""}</div><label>${t("scPer")}<select class="sf" data-r="${i}" data-f="per">${[0,1,2,3,4].map(n=>`<option value="${n}"${n===r.per?" selected":""}>${n||t("scAsNeeded")}</option>`).join("")}</select></label>${r.per?`<label>${t("scDays")}<input class="sf" type="number" min="1" max="365" value="${r.days}" data-r="${i}" data-f="days"></label><label>${t("scFood")}<select class="sf" data-r="${i}" data-f="food">${fo(r)}</select></label><div class="st">${r.times.map((x,j)=>`<input class="sf" type="time" value="${x}" data-r="${i}" data-j="${j}" data-f="time">`).join("")}</div>`:`<span class="note" style="grid-column:3/-1;margin:0">${t("scSOS")}</span>`}</div>`).join("");
+  const ev={};SC.rows.forEach(r=>{if(r.per)r.times.forEach(x=>(ev[x]??=[]).push(r.name+(r.food?" ("+t("scF_"+r.food).toLowerCase()+")":"")))});
+  const tl=Object.keys(ev).sort().map(x=>`<div class="tl"><b>${esc(fmtT(x))}</b><span>${esc(ev[x].join(", "))}</span></div>`).join(""),timed=SC.rows.some(r=>r.per);
+  box.innerHTML=`<div class="card"><label class="note" style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:0">${t("scSrc")}<select class="sf" id="scSrc">${opts}</select></label></div><div class="card"><p class="note" style="margin:0 0 14px">${t("scNote")}</p><label class="note" style="display:flex;gap:10px;align-items:center;margin:0 0 6px">${t("scStart")}<input class="sf" type="date" id="scStart" value="${SC.start}"></label>${rows}${tl?`<div style="margin-top:18px"><b>${t("scGlance")}</b>${tl}</div>`:`<p class="note">${t("scNone")}</p>`}<div class="tabs"><button class="p" data-act="ics"${timed?"":" disabled"}>${t("scIcs")}</button><button data-act="notif"${timed?"":" disabled"}>${t(SC.notify?"scNotifOff":"scNotif")}</button></div><p class="note">${t("scIcsHelp")} ${t("scNotifNote")}</p>${SC.msg?`<p class="note" style="color:var(--wn)">${t(SC.msg)}</p>`:""}</div>`}
+$("scBox").addEventListener("change",async e=>{const el=e.target;if(!SC)return;
+  if(el.id==="scSrc"){wasNotify=SC.notify;SC=null;if(await loadOne(el.value))render();return}
+  if(el.id==="scStart"){if(el.value)SC.start=el.value;scSave();return}
+  if(el.dataset.r==null)return;const r=SC.rows[+el.dataset.r],f=el.dataset.f;
+  if(f==="per"){r.per=+el.value;r.times=defTimes(r.per);r.assumed=false}
+  else if(f==="days")r.days=Math.max(1,Math.min(365,parseInt(el.value)||1));
+  else if(f==="food")r.food=el.value;
+  else if(f==="time"&&el.value)r.times[+el.dataset.j]=el.value;
+  scSave();render()});
+// calendar file: one repeating daily event per dose time, with an alarm at the dose time (times are in the device's own time zone)
+const icsEsc=s=>String(s).replace(/\\/g,"\\\\").replace(/;/g,"\\;").replace(/,/g,"\\,").replace(/\n/g,"\\n");
+const fold=l=>{let o="";while(l.length>73){o+=l.slice(0,73)+"\r\n ";l=l.slice(73)}return o+l};
+function icsBuild(){const stamp=new Date().toISOString().replace(/[-:]/g,"").replace(/\.\d+/,"");
+  const L=["BEGIN:VCALENDAR","VERSION:2.0","PRODID:-//CuraSight//Medicine reminders//EN","CALSCALE:GREGORIAN","X-WR-CALNAME:CuraSight medicine reminders"];
+  SC.rows.forEach(r=>{if(!r.per)return;r.times.forEach(tm=>{const what=r.name+(r.dose?" ("+r.dose+")":"")+(r.food?", "+t("scF_"+r.food).toLowerCase():"");
+    L.push("BEGIN:VEVENT","UID:"+Date.now().toString(36)+Math.random().toString(36).slice(2)+"@curasight","DTSTAMP:"+stamp,"DTSTART:"+SC.start.replace(/-/g,"")+"T"+tm.replace(":","")+"00","DURATION:PT10M","RRULE:FREQ=DAILY;COUNT="+r.days,
+      "SUMMARY:"+icsEsc(t("scTake",{m:what})),"DESCRIPTION:"+icsEsc(t("scIcsDesc")),"BEGIN:VALARM","ACTION:DISPLAY","DESCRIPTION:"+icsEsc(t("scTake",{m:r.name})),"TRIGGER:PT0M","END:VALARM","END:VEVENT")})});
+  L.push("END:VCALENDAR");return L.map(fold).join("\r\n")+"\r\n"}
+$("scBox").addEventListener("click",async e=>{const a=e.target.closest("[data-act]");if(!a||!SC)return;
+  if(a.dataset.act==="ics"){const f=document.createElement("a");f.href=URL.createObjectURL(new Blob([icsBuild()],{type:"text/calendar;charset=utf-8"}));f.download="curasight-reminders.ics";document.body.appendChild(f);f.click();setTimeout(()=>{URL.revokeObjectURL(f.href);f.remove()},500)}
+  if(a.dataset.act==="notif"){SC.msg="";
+    if(SC.notify)SC.notify=false;
+    else if(!("Notification" in window))SC.msg="scNoNotif";
+    else{const p=Notification.permission==="granted"?"granted":await Notification.requestPermission();if(p==="granted")SC.notify=true;else SC.msg="scNotifDenied"}
+    scSave();render()}});
+CS.onLang(l=>{lang=l;render()});render();init();
+</script></body></html>

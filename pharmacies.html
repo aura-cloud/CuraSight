@@ -1,0 +1,49 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><title>CuraSight · Pharmacies</title><script src="common.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Hind:wght@400;500;600&family=Noto+Sans+Devanagari:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="app.css"></head><body data-page="ph"><div class="wrap">
+<div id="nav"></div>
+<section style="padding-top:28px"><div class="eb b" data-i="phEb"></div><div class="hd"><h2 data-i="phH"></h2><p data-i="phP"></p></div>
+<div class="card"><div class="tabs" style="margin-top:0"><button class="p" id="phLoc"></button><select id="phR" class="fi" aria-label="km"><option value="2000">2 km</option><option value="5000" selected>5 km</option><option value="10000">10 km</option></select></div>
+<div class="sw" style="margin:16px 0 0;display:flex;gap:10px"><input id="phQ" type="search" autocomplete="off"><button id="phGo"></button></div><p class="note" id="phNote" hidden></p></div><div id="phL"></div></section>
+</div>
+<script>
+const T={en:{phEb:"Pharmacies",phH:"Find a pharmacy near you",phP:"Share your live location to see nearby medical shops, or search an area. Your location stays in your browser and is never saved. Jan Aushadhi Kendras (low-cost generics) are marked when found.",phLive:"Use my live location",phStop:"Stop live location",phSearch:"Search an area or city",phGo:"Search",phLoading:"Looking for pharmacies…",phLocating:"Getting your location…",phLiveOn:"Live location is on. The list updates as you move.",phFrom:"Showing pharmacies near {w}.",phNone:"No pharmacies found in this range. Try a larger distance.",phErr:"Could not load pharmacies right now. Please try again.",phBusy:"The free map service is busy right now. Please try again in a minute, or choose a smaller distance.",phDenied:"Location permission is blocked. Allow it in your browser settings, or search an area instead.",phUnsup:"This browser cannot share location. Search an area instead.",phNoGeo:"Could not find that place. Try a nearby city or area name.",phUnn:"Medical store",phJan:"Jan Aushadhi",phAway:"away",phHrs:"Hours: {h}",phDir:"Directions",phCall:"Call"},hi:{phEb:"फार्मेसी",phH:"अपने पास की फार्मेसी खोजें",phP:"पास की मेडिकल दुकानें देखने के लिए अपनी लाइव लोकेशन साझा करें, या किसी इलाके का नाम खोजें। आपकी लोकेशन सिर्फ़ आपके ब्राउज़र में रहती है, सेव नहीं होती। जन औषधि केंद्र (सस्ती जेनेरिक दवाएं) मिलने पर चिह्नित होते हैं।",phLive:"मेरी लाइव लोकेशन इस्तेमाल करें",phStop:"लाइव लोकेशन बंद करें",phSearch:"इलाके या शहर का नाम खोजें",phGo:"खोजें",phLoading:"फार्मेसी खोजी जा रही हैं…",phLocating:"आपकी लोकेशन ली जा रही है…",phLiveOn:"लाइव लोकेशन चालू है। चलने पर सूची अपने आप बदलती है।",phFrom:"{w} के पास की फार्मेसी दिखाई जा रही हैं।",phNone:"इस दायरे में कोई फार्मेसी नहीं मिली। दूरी बढ़ाकर देखें।",phErr:"अभी फार्मेसी की सूची नहीं आ सकी। फिर कोशिश करें।",phBusy:"मुफ़्त मैप सेवा अभी व्यस्त है। एक मिनट बाद फिर कोशिश करें, या कम दूरी चुनें।",phDenied:"लोकेशन की अनुमति बंद है। ब्राउज़र की सेटिंग में अनुमति दें, या इलाके का नाम खोजें।",phUnsup:"यह ब्राउज़र लोकेशन साझा नहीं कर सकता। इलाके का नाम खोजें।",phNoGeo:"वह जगह नहीं मिली। पास के शहर या इलाके का नाम आज़माएं।",phUnn:"मेडिकल स्टोर",phJan:"जन औषधि",phAway:"दूर",phHrs:"समय: {h}",phDir:"रास्ता देखें",phCall:"फ़ोन करें"}};
+const $=id=>document.getElementById(id),esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let lang=CS.lang;const t=(k,p={})=>(T[lang][k]??T.en[k]??k).replace(/\{(\w+)\}/g,(_,x)=>p[x]??"");
+const rs=n=>"₹"+Number(n).toLocaleString("en-IN",{maximumFractionDigits:2});
+const fmtDate=v=>{try{return new Date(v).toLocaleString(lang==="hi"?"hi-IN":"en-IN",{dateStyle:"medium",timeStyle:"short"})}catch(e){return String(v)}};
+const pf=async(u,o={})=>{const r=await fetch(u,{credentials:"same-origin",...o});if(r.status===401){location.replace("/auth.html");throw 0}return r};
+let watchId=null,lastFetch=null,phRes=[],phWhere="",phNoteS=null,phSeq=0;
+const hav=(a,b,c,d)=>{const x=Math.PI/180,p=Math.sin((c-a)*x/2)**2+Math.cos(a*x)*Math.cos(c*x)*Math.sin((d-b)*x/2)**2;return 12742000*Math.asin(Math.sqrt(p))};
+const distTxt=m=>m<1000?Math.max(10,Math.round(m/10)*10)+" m":(m/1000).toFixed(1)+" km";
+function phRender(){
+  $("phLoc").textContent=t(watchId!==null?"phStop":"phLive");$("phQ").placeholder=t("phSearch");$("phGo").textContent=t("phGo");
+  const n=$("phNote");n.hidden=!phNoteS;if(phNoteS)n.textContent=t(phNoteS.k,phNoteS.p);
+  $("phL").innerHTML=phRes.map(p=>`<article class="med"><div class="mh"><div><h3>${esc(p.name||t("phUnn"))}</h3>${p.jan?`<span class="badge" style="color:var(--ok);border-color:var(--ok)">${t("phJan")}</span>`:""}${p.addr?`<div class="note" style="margin:6px 0 0">${esc(p.addr)}</div>`:""}</div><div class="price">${distTxt(p.dist)}<small>${t("phAway")}</small></div></div>${p.hours?`<p class="note">${esc(t("phHrs",{h:p.hours}))}</p>`:""}<div class="tabs"><a class="btn p" href="https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}" target="_blank" rel="noopener">${t("phDir")}</a>${p.tel?`<a class="btn" href="tel:${esc(p.tel)}">${t("phCall")} · ${esc(p.phone)}</a>`:""}</div></article>`).join("")}
+async function phFetch(lat,lon){const my=++phSeq;phNoteS={k:"phLoading"};phRender();
+  try{const r=await pf(`/api/pharmacies?lat=${lat}&lon=${lon}&r=${$("phR").value}`);
+    if(r.status===502){if(my===phSeq){phRes=[];phNoteS={k:"phBusy"};phRender()}return}
+    if(!r.ok)throw 1;const d=await r.json();if(my!==phSeq)return;
+    phRes=d;phNoteS=!d.length?{k:"phNone"}:phWhere?{k:"phFrom",p:{w:phWhere}}:{k:"phLiveOn"}}
+  catch(e){if(my!==phSeq)return;phRes=[];phNoteS={k:"phErr"}}
+  phRender()}
+function stopLive(){if(watchId!==null){navigator.geolocation.clearWatch(watchId);watchId=null}}
+$("phLoc").onclick=()=>{
+  if(watchId!==null){stopLive();phNoteS=null;phRender();return}
+  if(!navigator.geolocation){phNoteS={k:"phUnsup"};phRender();return}
+  phWhere="";phNoteS={k:"phLocating"};let first=true;
+  watchId=navigator.geolocation.watchPosition(p=>{const a=p.coords.latitude,o=p.coords.longitude;   // refresh the list after moving about 250 m
+    if(first||hav(lastFetch[0],lastFetch[1],a,o)>250){first=false;lastFetch=[a,o];phFetch(a,o)}},
+    e=>{stopLive();phNoteS={k:e.code===1?"phDenied":"phErr"};phRender()},{enableHighAccuracy:true,maximumAge:15000,timeout:20000});
+  phRender()};
+async function phSearch(){const q=$("phQ").value.trim();if(!q)return;stopLive();phNoteS={k:"phLoading"};phRender();
+  try{const r=await pf("/api/geocode?q="+encodeURIComponent(q));if(r.status===404){phNoteS={k:"phNoGeo"};phRender();return}if(!r.ok)throw 1;
+    const g=await r.json();phWhere=g.name;lastFetch=[g.lat,g.lon];phFetch(g.lat,g.lon)}
+  catch(e){phNoteS={k:"phErr"};phRender()}}
+$("phGo").onclick=phSearch;$("phQ").onkeydown=e=>{if(e.key==="Enter")phSearch()};
+$("phR").onchange=()=>{if(lastFetch)phFetch(lastFetch[0],lastFetch[1])};
+window.addEventListener("pagehide",stopLive);
+function applyLang(){document.documentElement.lang=lang;document.querySelectorAll("[data-i]").forEach(e=>e.textContent=t(e.dataset.i));phRender()}
+CS.onLang(l=>{lang=l;applyLang()});applyLang();
+</script></body></html>
